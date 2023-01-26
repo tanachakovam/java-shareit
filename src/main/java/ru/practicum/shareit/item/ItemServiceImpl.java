@@ -77,6 +77,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<Item> search(String text) {
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        }
         List<Item> itemsFromSearch = new ArrayList<>();
         for (Item item : items.values()) {
             if ((item.getName().toLowerCase().contains(text.toLowerCase()) || item.getDescription().toLowerCase().contains(text.toLowerCase())) && item.getAvailable()) {
