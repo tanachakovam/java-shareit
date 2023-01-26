@@ -20,7 +20,7 @@ public class UserDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UserUpdateDto{
+    public static class UserUpdateDto {
 
         private Integer id;
         private String name;
