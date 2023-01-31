@@ -9,16 +9,12 @@ import javax.validation.constraints.NotBlank;
  * TODO Sprint add-controllers.
  */
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
+@Builder
 public class User {
     private Integer id;
     private String name;
     @NotBlank
     @Email
     private String email;
-
-
 }

@@ -1,41 +1,25 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.item.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.*;
 
 import java.util.*;
 
-@Service
-@Component
-public class ItemServiceImpl implements ItemService {
-
-    private final UserService userService;
-
+@Repository
+public class ItemDao {
     private Map<Integer, Item> items = new HashMap<>();
     private int id;
 
-    @Autowired
-    public ItemServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
-
-
-    @Override
-    public Item addNewItem(Item item, int userId) throws UserNotFoundException {
-        if (userService.getUserById(userId) == null) {
-            throw new UserNotFoundException("User with this ID doesn't exist.");
-        }
+    public Item addNewItem(Item item) {
         item.setId(++id);
         items.put(item.getId(), item);
         return item;
     }
 
-    @Override
-    public Item updateItem(Item item, int id, int userId) throws ItemNotFoundException {
-        if (!items.containsKey(id)) {
+
+    public Item updateItem(Item item, int userId) {
+        if (items.get(item.getId()) == null) {
             throw new ItemNotFoundException("Item with this ID doesn't exist.");
         }
         if (!items.get(id).getOwner().equals(userId)) {
@@ -55,16 +39,11 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    @Override
     public Item getItemById(int id) {
-        if (!items.containsKey(id)) {
-            throw new ItemNotFoundException("Item with this ID doesn't exist.");
-        }
+        if (items.get(id) == null) throw new ItemNotFoundException("Item with this ID doesn't exist.");
         return items.get(id);
     }
 
-
-    @Override
     public Collection<Item> getItemsOfUser(int id) {
         List<Item> itemsOfUser = new ArrayList<>();
         for (Item item : items.values()) {
@@ -75,7 +54,6 @@ public class ItemServiceImpl implements ItemService {
         return itemsOfUser;
     }
 
-    @Override
     public Collection<Item> search(String text) {
         if (text.isBlank()) {
             return Collections.emptyList();
@@ -88,6 +66,4 @@ public class ItemServiceImpl implements ItemService {
         }
         return itemsFromSearch;
     }
-
-
 }

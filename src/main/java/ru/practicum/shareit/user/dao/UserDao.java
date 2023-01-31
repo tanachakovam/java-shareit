@@ -1,26 +1,24 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dao;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.user.UserNotFoundException;
+import ru.practicum.shareit.user.UserValidationException;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-
-@Service
-@Component
-@Slf4j
-public class UserServiceImpl implements UserService {
+@Repository
+public class UserDao {
     private Map<Integer, User> users = new HashMap<>();
     private int id;
 
-    @Override
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
 
-    @Override
     public User addNewUser(User user) throws UserValidationException {
         checkEmail(user);
         user.setId(++id);
@@ -28,9 +26,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
     public User updateUser(User user, int userId) {
-        if (!users.containsKey(userId)) {
+        if (users.get(userId) == null) {
             throw new UserNotFoundException("User with this ID doesn't exist.");
         }
         checkEmail(user);
@@ -45,7 +42,6 @@ public class UserServiceImpl implements UserService {
         return users.get(userId);
     }
 
-
     private void checkEmail(User user) throws UserValidationException {
         for (User addedUser : users.values()) {
             if (addedUser.getEmail().equals(user.getEmail())) {
@@ -55,16 +51,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-    @Override
     public User getUserById(int userId) {
-        if (!users.containsKey(userId)) {
+        if (users.get(userId) == null) {
             throw new UserNotFoundException("User with this ID doesn't exist.");
         }
         return users.get(userId);
     }
 
-    @Override
     public void deleteUserById(int userId) {
         users.remove(userId);
     }

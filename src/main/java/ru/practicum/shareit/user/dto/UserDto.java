@@ -5,10 +5,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class UserDto {
     private Integer id;
     private String name;
@@ -16,10 +13,7 @@ public class UserDto {
     @Email
     private String email;
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @Data
     public static class UserUpdateDto {
 
         private Integer id;
