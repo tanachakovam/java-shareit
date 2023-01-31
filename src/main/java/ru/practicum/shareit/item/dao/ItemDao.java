@@ -18,8 +18,8 @@ public class ItemDao {
     }
 
 
-    public Item updateItem(Item item, int userId) {
-        if (items.get(item.getId()) == null) {
+    public Item updateItem(Item item, int id, int userId) {
+        if (items.get(id) == null) {
             throw new ItemNotFoundException("Item with this ID doesn't exist.");
         }
         if (!items.get(id).getOwner().equals(userId)) {

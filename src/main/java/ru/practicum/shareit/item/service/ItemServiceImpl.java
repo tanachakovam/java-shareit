@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(ItemDto itemDto, int id, int userId) throws ItemNotFoundException {
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(userId);
-        Item updatedItem = itemDao.updateItem(item, userId);
+        Item updatedItem = itemDao.updateItem(item, id, userId);
         return itemMapper.toItemDto(updatedItem);
     }
 
