@@ -15,11 +15,9 @@ public class UserDto {
 
     @Data
     public static class UserUpdateDto {
-
         private Integer id;
         private String name;
         @Email
         private String email;
-
     }
 }

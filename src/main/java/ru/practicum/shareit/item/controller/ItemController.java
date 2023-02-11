@@ -2,9 +2,9 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.UserNotFoundException;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -21,7 +21,7 @@ public class ItemController {
 
 
     @PostMapping
-    public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(SHARER_USER_ID) int userId) throws UserNotFoundException {
+    public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(SHARER_USER_ID) int userId) {
         return itemService.addNewItem(itemDto, userId);
     }
 
@@ -43,5 +43,11 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<ItemDto> search(@RequestParam(value = "text") String text, @RequestHeader(SHARER_USER_ID) int userId) {
         return itemService.search(text);
+    }
+
+    // POST /items/{itemId}/comment .
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addNewComment(@Valid @RequestBody CommentDto commentDto, @PathVariable String itemId, @RequestHeader(SHARER_USER_ID) int userId) {
+        return itemService.addNewComment(commentDto, userId, Integer.parseInt(itemId));
     }
 }
