@@ -10,6 +10,6 @@ public class CommentDto {
     private int id;
     @NotBlank
     private String text;
-    private Integer authorName;
+    private String authorName;
     private LocalDateTime created;
 }

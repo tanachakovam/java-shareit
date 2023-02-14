@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.*;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,11 +24,13 @@ public class Booking {
     private LocalDateTime start;
     @Column(name = "end_day")
     private LocalDateTime end;
-    @Column(name = "item")
-    private Integer itemId;
-    @Column(name = "booker")
-    private Integer bookerId;
+    @JoinColumn(name = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item item;
+    @JoinColumn(name = "booker_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User booker;
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
-    private String itemName;
+
 }

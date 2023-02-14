@@ -18,9 +18,27 @@ public class BookingDto {
     @Column(name = "end_day")
     private LocalDateTime end;
     private Integer itemId;
-    private String itemName;
+    private Item item;
     private BookingStatus status;
-    private Integer bookerId;
+    private Booker booker;
 
+    @Data
+    public static class Booker {
+        private final Integer id;
+        private final String name;
+    }
+
+    @Data
+    public static class Item {
+        private final Integer id;
+        private final String name;
+    }
+
+
+    @Data
+    public static class BookingDtoForOwner {
+        private Integer id;
+        private Integer bookerId;
+    }
 
 }

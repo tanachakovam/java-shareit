@@ -20,13 +20,13 @@ CREATE TABLE IF NOT EXISTS items
 CREATE TABLE IF NOT EXISTS bookings
 (
     id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    item      BIGINT,
-    booker    BIGINT,
+    item_id      BIGINT,
+    booker_id    BIGINT,
     start_day TIMESTAMP WITHOUT TIME ZONE,
     end_day   TIMESTAMP WITHOUT TIME ZONE,
     status    VARCHAR(50),
-    FOREIGN KEY (item) REFERENCES items (id),
-    FOREIGN KEY (booker) REFERENCES users (id)
+    FOREIGN KEY (item_id) REFERENCES items (id),
+    FOREIGN KEY (booker_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS comments

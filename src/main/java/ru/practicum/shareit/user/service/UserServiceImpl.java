@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 
-import org.springframework.context.annotation.Lazy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.UserNotFoundException;
@@ -12,18 +12,15 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(@Lazy UserRepository userRepository, @Lazy UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
 
     @Transactional
     @Override
@@ -64,11 +61,17 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDtoToUpd(userToUpdate);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public UserDto getUserById(int userId) {
         User foundUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User " + userId + " is not found"));
         return userMapper.toUserDto(foundUser);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public User findUserById(int userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User " + userId + " is not found"));
     }
 
     @Transactional

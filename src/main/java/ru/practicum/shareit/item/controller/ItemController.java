@@ -32,7 +32,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable String itemId, @RequestHeader(SHARER_USER_ID) int userId) {
-        return itemService.getItemById(Integer.parseInt(itemId));
+        return itemService.getItemById(Integer.parseInt(itemId), userId);
     }
 
     @GetMapping
@@ -45,9 +45,9 @@ public class ItemController {
         return itemService.search(text);
     }
 
-    // POST /items/{itemId}/comment .
+    // POST /items/{itemId}/comment
     @PostMapping("/{itemId}/comment")
     public CommentDto addNewComment(@Valid @RequestBody CommentDto commentDto, @PathVariable String itemId, @RequestHeader(SHARER_USER_ID) int userId) {
-        return itemService.addNewComment(commentDto, userId, Integer.parseInt(itemId));
+        return itemService.addNewComment(commentDto, Integer.parseInt(itemId), userId);
     }
 }

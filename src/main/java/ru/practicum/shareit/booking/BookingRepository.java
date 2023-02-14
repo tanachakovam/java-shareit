@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,41 +12,61 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByBookerId(int id);
 
-    List<Booking> findAllByBookerIdAndStatusEqualsOrderByIdDesc(int id, BookingStatus status);
+    List<Booking> findAllByBookerIdOrderByStartDesc(int id);
 
-    List<Booking> findAllByBookerIdAndStartAfterOrderByIdDesc(int id, LocalDateTime now);
+    List<Booking> findAllByBookerIdAndStatusEqualsOrderByStartDesc(int id, BookingStatus status);
 
-    List<Booking> findAllByBookerIdAndEndBeforeOrderByIdDesc(int id, LocalDateTime now);
+    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(int id, LocalDateTime now);
 
-    List<Booking> findAllByBookerIdAndEndBeforeAndStartAfterOrderByIdDesc(int id, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByBookerIdAndEndBeforeOrderByStartDesc(int id, LocalDateTime now);
 
-    @Query(" select b from Booking b, Item i " +
-            "where i.owner = ?1 " +
-            "order by b.id desc ")
+    List<Booking> findAllByBookerIdAndEndAfterAndStartBeforeOrderByStartDesc(int id, LocalDateTime start, LocalDateTime end);
+
+    @Query(" select b from Booking b " +
+            "where b.item.id = ?1 ")
+    List<Booking> findAllByItemId(int id);
+
+    @Query(" select b from Booking b " +
+            "where b.item.owner = ?1 " +
+            "order by b.start desc ")
     List<Booking> findAllByOwner(int id);
 
-    @Query(" select b from Booking b, Item i " +
-            "where i.owner = ?1 " +
+    @Query(" select b from Booking b " +
+            "where b.item.owner = ?1 " +
             "and b.status = ?2  " +
-            "order by b.id desc ")
-    List<Booking> findAllByOwnerAndStatusAndOrderByIdDesc(int id, BookingStatus status);
+            "order by b.start desc ")
+    List<Booking> findAllByOwnerAndStatusAndOrderByStartDesc(int id, BookingStatus status);
 
-    @Query(" select b from Booking b, Item i " +
-            "where i.owner = ?1 " +
+    @Query(" select b from Booking b " +
+            "where b.item.owner = ?1 " +
             "and b.start > ?2  " +
-            "order by b.id desc ")
-    List<Booking> findAllByOwnerAndStartAfterOrderByIdDesc(int id, LocalDateTime now);
+            "order by b.start desc ")
+    List<Booking> findAllByOwnerAndStartAfterOrderByStartDesc(int id, LocalDateTime now);
 
-    @Query(" select b from Booking b, Item i " +
-            "where i.owner = ?1 " +
+    @Query(" select b from Booking b " +
+            "where b.item.owner = ?1 " +
             "and b.end < ?2  " +
-            "order by b.id desc ")
-    List<Booking> findAllByOwnerAndEndBeforeOrderByIdDesc(int id, LocalDateTime now);
+            "order by b.start desc ")
+    List<Booking> findAllByOwnerAndEndBeforeOrderByStartDesc(int id, LocalDateTime now);
 
-    @Query(" select b from Booking b, Item i " +
-            "where i.owner = ?1 " +
+    @Query(" select b from Booking b " +
+            "where b.item.owner = ?1 " +
             "and b.start < ?2  " +
             "and b.end > ?3 " +
-            "order by b.id desc ")
-    List<Booking> findAllByOwnerAndEndBeforeAndStartAfterOrderByIdDesc(int id, LocalDateTime start, LocalDateTime end);
+            "order by b.start desc ")
+    List<Booking> findAllByOwnerAndEndAfterAndStartBeforeOrderByStartDesc(int id, LocalDateTime start, LocalDateTime end);
+
+    @Query(" select distinct b from Booking b " +
+            "where b.item.id = ?1 " +
+            "and b.end < ?2 " +
+            "and b.item.owner = ?3 " +
+            "order by b.start desc ")
+    Booking findLastBooking(int itemId, LocalDateTime now, int userId);
+
+    @Query(" select distinct b from Booking b " +
+            "where b.item.id = ?1 " +
+            "and b.start >  ?2 " +
+            "and b.item.owner = ?3 " +
+            "order by b.start desc ")
+    Booking findNextBooking(int itemId, LocalDateTime now, int userId);
 }

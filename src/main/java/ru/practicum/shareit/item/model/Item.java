@@ -3,8 +3,11 @@ package ru.practicum.shareit.item.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.item.dto.CommentDto;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
@@ -25,4 +28,10 @@ public class Item {
     private Boolean available;
     private Integer owner;
     private Integer request;
+    @Transient
+    private BookingDto.BookingDtoForOwner lastBooking;
+    @Transient
+    private BookingDto.BookingDtoForOwner nextBooking;
+    @Transient
+    private List<CommentDto> comments;
 }
