@@ -20,10 +20,7 @@ import ru.practicum.shareit.user.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -120,9 +117,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void setBookings(Item item, int userId) {
-        if (item.getOwner() == userId) {
-            Booking lastBooking = bookingRepository.findLastBooking(item.getId(), LocalDateTime.now(), userId);
-            Booking nextBooking = bookingRepository.findNextBooking(item.getId(), LocalDateTime.now(), userId);
+        if (item.getOwner() == userId && !bookingRepository.findAllByOwner(userId).isEmpty()) {
+            Booking lastBooking = bookingRepository.findLastBooking(item.getId(), LocalDateTime.now(), userId).stream().findFirst().orElse(null);
+            Booking nextBooking = bookingRepository.findNextBooking(item.getId(), LocalDateTime.now(), userId).stream().findFirst().orElse(null);
             item.setLastBooking(bookingMapper.toBookingDtoForOwner(lastBooking));
             item.setNextBooking(bookingMapper.toBookingDtoForOwner(nextBooking));
         } else {
