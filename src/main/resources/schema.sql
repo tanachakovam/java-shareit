@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS items
 CREATE TABLE IF NOT EXISTS bookings
 (
     id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    item_id      BIGINT,
-    booker_id    BIGINT,
+    item_id   BIGINT,
+    booker_id BIGINT,
     start_day TIMESTAMP WITHOUT TIME ZONE,
     end_day   TIMESTAMP WITHOUT TIME ZONE,
     status    VARCHAR(50),
