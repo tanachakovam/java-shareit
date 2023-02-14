@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS comments
     item_id   BIGINT,
     author_id BIGINT,
     text      VARCHAR(512),
+    created TIMESTAMP WITHOUT TIME ZONE,
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (author_id) REFERENCES users (id)
 );
