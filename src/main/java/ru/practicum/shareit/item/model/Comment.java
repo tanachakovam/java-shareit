@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ public class Comment {
     private String text;
     @Column(name = "item_id")
     private Integer itemId;
-    @Column(name = "author_id")
-    private Integer authorId;
-    private String authorName;
+    @JoinColumn(name = "author_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User author;
     private LocalDateTime created;
 }

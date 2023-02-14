@@ -165,7 +165,7 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemNotFoundException("Item with this ID is not found.");
         }
         Comment comment = commentMapper.toComment(commentDto);
-        comment.setAuthorName(userService.getUserById(userId).getName());
+        comment.setAuthor(userService.findUserById(userId));
         comment.setItemId(itemId);
         comment.setCreated(LocalDateTime.now());
         Comment addedComment = commentRepository.save(comment);
