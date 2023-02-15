@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoFull;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserNotFoundException;
 
@@ -13,9 +14,9 @@ public interface ItemService {
 
     ItemDto updateItem(ItemDto itemDto, int id, int userId);
 
-    ItemDto getItemById(int id, int userId);
+    ItemDtoFull getItemById(int id, int userId);
 
-    Collection<ItemDto> getItemsOfUser(int id);
+    Collection<ItemDtoFull> getItemsOfUser(int id);
 
     Collection<ItemDto> search(String text);
 
@@ -23,5 +24,5 @@ public interface ItemService {
 
     Item findItemById(int id);
 
-    Collection<Item>  findItemsByUser(int id);
+    Collection<Item> findItemsByUser(int id);
 }

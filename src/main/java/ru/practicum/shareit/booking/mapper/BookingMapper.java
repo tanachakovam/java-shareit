@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
+import java.util.Collection;
 
 
 @Mapper(componentModel = "spring")
@@ -13,6 +14,8 @@ public interface BookingMapper {
     Booking toBooking(BookingDto bookingDto);
 
     BookingDto toBookingDto(Booking booking);
+
+    Collection<BookingDto> toBookingDtoCollection(Collection<Booking> booking);
 
     @Mapping(target = "bookerId", source = "booking.booker.id")
     BookingDto.BookingDtoForOwner toBookingDtoForOwner(Booking booking);

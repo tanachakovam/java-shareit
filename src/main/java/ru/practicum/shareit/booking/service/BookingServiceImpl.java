@@ -70,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
         if (!itemService.findItemsByUser(userId).contains(itemService.findItemById(approvingBooking.getItem().getId()))) {
             throw new UserNotFoundException("Only owner can approve booking.");
         }
-        if (approvingBooking.getStatus().equals(BookingStatus.APPROVED)) {
+        if (BookingStatus.APPROVED.equals(approvingBooking.getStatus())) {
             throw new WrongBookingRequestException("Booking is already approved.");
         }
         if (approved) {
@@ -124,11 +124,7 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new WrongBookingRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
-        List<BookingDto> foundBookings = new ArrayList<>();
-        for (Booking booking : bookings) {
-            foundBookings.add(bookingMapper.toBookingDto(booking));
-        }
-        return foundBookings;
+        return bookingMapper.toBookingDtoCollection(bookings);
     }
 
     @Override
@@ -160,11 +156,7 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new WrongBookingRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
-        List<BookingDto> foundBookings = new ArrayList<>();
-        for (Booking booking : bookings) {
-            foundBookings.add(bookingMapper.toBookingDto(booking));
-        }
-        return foundBookings;
+        return bookingMapper.toBookingDtoCollection(bookings);
     }
 }
 

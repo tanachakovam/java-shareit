@@ -19,8 +19,9 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String text;
-    @Column(name = "item_id")
-    private Integer itemId;
+    @JoinColumn(name = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item item;
     @JoinColumn(name = "author_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
