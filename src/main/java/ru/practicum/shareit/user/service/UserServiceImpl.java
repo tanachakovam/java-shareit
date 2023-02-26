@@ -5,14 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.user.UserNotFoundException;
-import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,16 +25,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUsers() {
         Collection<User> users = userRepository.findAll();
-        List<UserDto> foundUsers = new ArrayList<>();
-        for (User user : users) {
-            foundUsers.add(userMapper.toUserDto(user));
-        }
-        return foundUsers;
+        return userMapper.toUserDto(users);
     }
 
     @Transactional
     @Override
-    public UserDto addNewUser(UserDto userDto) throws UserValidationException {
+    public UserDto addNewUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
         User addedUser = userRepository.save(user);
         return userMapper.toUserDto(addedUser);

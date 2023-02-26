@@ -4,9 +4,10 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoFull;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserNotFoundException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import java.util.Collection;
+import java.util.List;
 
 
 public interface ItemService {
@@ -25,4 +26,6 @@ public interface ItemService {
     Item findItemById(int id);
 
     Collection<Item> findItemsByUser(int id);
+
+    List<ItemDto> getItemForRequests(int requestId);
 }

@@ -1,8 +1,6 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -17,6 +15,9 @@ import javax.validation.constraints.Email;
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,5 @@ public class User {
     @Email
     @Column(unique = true)
     private String email;
+
 }

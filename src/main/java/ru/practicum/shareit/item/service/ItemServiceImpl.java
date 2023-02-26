@@ -3,22 +3,22 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.WrongBookingRequestException;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.CommentRepository;
-import ru.practicum.shareit.item.ItemNotFoundException;
-import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoFull;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserNotFoundException;
+import ru.practicum.shareit.item.repository.CommentRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto addNewItem(ItemDto itemDto, int userId) throws UserNotFoundException {
-        if (userService.getUserById(userId) == null) {
+        if (userService.findUserById(userId) == null) {
             throw new UserNotFoundException("User with this ID doesn't exist.");
         }
         Item item = itemMapper.toItem(itemDto);
@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto updateItem(ItemDto itemDto, int id, int userId) throws ItemNotFoundException {
         Item item = itemMapper.toItem(itemDto);
-        Item itemToUpdate = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Item " + id + " is not found."));
+        Item itemToUpdate = findItemById(id);
         if (!itemToUpdate.getOwner().equals(userId)) {
             throw new ItemNotFoundException("Only owner can update the information about item.");
         }
@@ -87,7 +87,7 @@ public class ItemServiceImpl implements ItemService {
         BookingDto.BookingDtoForOwner nextBooking = null;
         BookingDto.BookingDtoForOwner lastBooking = null;
         List<CommentDto> comments = null;
-        Item foundItem = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Item " + id + " is not found."));
+        Item foundItem = findItemById(id);
         if (bookingRepository.findAllByItemId(foundItem.getId()) != null) {
             nextBooking = getNextBooking(foundItem, userId);
             lastBooking = getLastBooking(foundItem, userId);
@@ -99,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Item findItemById(int id) {
-        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Item " + id + " is not found."));
+        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Item is not found."));
     }
 
     @Override
@@ -145,8 +145,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<CommentDto> getComments(Item item) {
-        List<Comment> comments = commentRepository.findCommentsByItemId(item.getId());
+        List<Comment> comments;
+        comments = commentRepository.findCommentsByItemId(item.getId());
         return commentMapper.toCommentDtoCollection(comments);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ItemDto> getItemForRequests(int requestId) {
+        List<Item> items = itemRepository.findAllByRequestId(requestId);
+        return itemMapper.toItemDtoCollection(items);
     }
 
     @Override
@@ -162,18 +170,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public CommentDto addNewComment(CommentDto commentDto, int itemId, int userId) {
-        if (userService.getUserById(userId) == null) {
+        if (userService.findUserById(userId) == null) {
             throw new UserNotFoundException("User with this ID doesn't exist.");
         }
         if (bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now()).isEmpty()) {
             throw new WrongBookingRequestException("Comment can't be written if user didn't booked the item.");
         }
-        if (findItemById(itemId) == null) {
-            throw new ItemNotFoundException("Item with this ID is not found.");
-        }
+        Item item = findItemById(itemId);
         Comment comment = commentMapper.toComment(commentDto);
         comment.setAuthor(userService.findUserById(userId));
-        comment.setItem(findItemById(itemId));
+        comment.setItem(item);
         comment.setCreated(LocalDateTime.now());
         Comment addedComment = commentRepository.save(comment);
         return commentMapper.toCommentDto(addedComment);

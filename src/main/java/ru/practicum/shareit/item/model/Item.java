@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,6 +14,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +24,5 @@ public class Item {
     private String description;
     private Boolean available;
     private Integer owner;
-    private Integer request;
+    private Integer requestId;
 }
