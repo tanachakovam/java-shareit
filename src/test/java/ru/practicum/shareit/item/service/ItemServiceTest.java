@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.WrongBookingRequestException;
 import ru.practicum.shareit.booking.mapper.BookingMapperImpl;
 import ru.practicum.shareit.booking.model.Booking;
@@ -73,6 +72,7 @@ class ItemServiceTest {
     void beforeEach() {
         itemMapper = new ItemMapperImpl();
         commentMapper = new CommentMapperImpl();
+        bookingMapper = new BookingMapperImpl();
         itemService = new ItemServiceImpl(userService, itemMapper, bookingMapper, itemRepository, bookingRepository,
                 commentRepository, commentMapper);
 
@@ -198,12 +198,9 @@ class ItemServiceTest {
         when(bookingRepository.findAllByItemId(item.getId()))
                 .thenReturn(List.of(booking));
 
-        BookingDto.BookingDtoForOwner lastBooking = itemService.getLastBooking(item, item.getOwner());
-        BookingDto.BookingDtoForOwner nextBooking = itemService.getNextBooking(item, item.getOwner());
+        ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, null, null, Collections.emptyList());
 
-        ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, lastBooking, nextBooking, Collections.emptyList());
-
-        Collection<ItemDtoFull> actualItemDtos = itemService.getItemsOfUser(anyInt());
+        Collection<ItemDtoFull> actualItemDtos = itemService.getItemsOfUser(itemDtos.getId());
 
         assertNotNull(actualItemDtos);
         assertEquals(List.of(itemDtos), actualItemDtos);

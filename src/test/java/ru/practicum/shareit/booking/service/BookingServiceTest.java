@@ -220,6 +220,23 @@ class BookingServiceTest {
     }
 
     @Test
+    void approveBooking_whenIsValid_thenRejectedBooking() {
+        when(itemService.findItemById(anyInt()))
+                .thenReturn(item);
+        when(bookingRepository.findById(anyInt()))
+                .thenReturn(Optional.of(booking));
+
+        booking.setItem(item);
+        booking.setStatus(BookingStatus.REJECTED);
+        when(bookingRepository.save(any(Booking.class)))
+                .thenReturn(booking);
+
+        BookingDto actualBookingDto = bookingService.approveBooking(booking.getId(), false, item.getOwner());
+        assertNotNull(actualBookingDto);
+        assertEquals(actualBookingDto.getStatus(), BookingStatus.REJECTED);
+    }
+
+    @Test
     void approveBooking_whenBookingNotFound_thenBookingNotFoundExceptionThrown() {
         assertThatThrownBy(
                 () -> bookingService.approveBooking(booking.getId(), true, anyInt())
@@ -266,6 +283,23 @@ class BookingServiceTest {
                 () -> bookingService.getBooking(booking.getId(), user.getId())
         ).isInstanceOf(UserNotFoundException.class)
                 .message().isEqualTo("User with this ID doesn't exist.");
+    }
+
+    @Test
+    void getBooking_whenStatusWaiting_thenResponseStatusOkWithBooking() {
+        when(userService.findUserById(anyInt()))
+                .thenReturn(user);
+        when(bookingRepository.findById(anyInt()))
+                .thenReturn(Optional.of(booking));
+        when(bookingRepository.findAllByBookerId(user.getId()))
+                .thenReturn(List.of(booking));
+
+        BookingDto bookingDto = bookingMapper.toBookingDto(booking);
+
+        BookingDto actualBookingDto = bookingService.getBooking(booking.getId(), user.getId());
+
+        assertNotNull(actualBookingDto);
+        assertEquals(bookingDto, actualBookingDto);
     }
 
     @Test
