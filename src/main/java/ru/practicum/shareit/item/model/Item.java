@@ -1,25 +1,28 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 /**
  * TODO Sprint add-controllers.
  */
 
-@Data
-@Builder
+
+@Entity
+@Table(name = "items")
+@Getter
+@Setter
+@ToString
 public class Item {
-    private int id;
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String name;
-    @NotBlank
     private String description;
-    @NotNull
     private Boolean available;
     private Integer owner;
     private Integer request;
-
 }
