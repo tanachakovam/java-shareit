@@ -41,6 +41,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.toItemRequestDto(addedRequest);
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public Collection<ItemRequestDtoWithItems> getAllRequestsOfUser(int userId) {

@@ -24,6 +24,7 @@ public class ItemRequestController {
     public static final String SHARER_USER_ID = "X-Sharer-User-Id";
     private final ItemRequestService itemRequestService;
 
+
     @PostMapping
     public ItemRequestDto addNewItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
                                             @RequestHeader(SHARER_USER_ID) int userId) {

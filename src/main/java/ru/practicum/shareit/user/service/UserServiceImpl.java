@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto.UserUpdateDto updateUser(UserDto.UserUpdateDto userDtoToUpd, int userId) {
         User user = userMapper.toUserToUpd(userDtoToUpd);
-        User userToUpdate = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User " + userId + " is not found"));
+        User userToUpdate = findUserById(userId);
         if (user.getEmail() == null) {
             userToUpdate.setEmail(userToUpdate.getEmail());
         } else {

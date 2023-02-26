@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.WrongBookingRequestException;
 import ru.practicum.shareit.booking.mapper.BookingMapperImpl;
 import ru.practicum.shareit.booking.model.Booking;
@@ -123,6 +124,7 @@ class ItemServiceTest {
                 .thenReturn(Optional.of(item));
 
         item.setName("Updated name");
+        item.setAvailable(null);
         when(itemRepository.save(any(Item.class)))
                 .thenReturn(item);
         ItemDto itemDto = itemMapper.toItemDto(item);
@@ -131,6 +133,7 @@ class ItemServiceTest {
         assertNotNull(actualItemDto);
         assertEquals(itemDto.getName(), actualItemDto.getName());
         assertEquals(itemDto.getDescription(), actualItemDto.getDescription());
+        assertEquals(itemDto.getAvailable(), actualItemDto.getAvailable());
     }
 
     @Test
@@ -189,10 +192,16 @@ class ItemServiceTest {
     void getItemsOfUser_whenInvoked_thenResponseStatusOkWithItemCollection() {
         final List<Item> items = List.of(item);
 
+
         when(itemRepository.findAllByOwner(anyInt()))
                 .thenReturn(items);
+        when(bookingRepository.findAllByItemId(item.getId()))
+                .thenReturn(List.of(booking));
 
-        ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, null, null, Collections.emptyList());
+        BookingDto.BookingDtoForOwner lastBooking = itemService.getLastBooking(item, item.getOwner());
+        BookingDto.BookingDtoForOwner nextBooking = itemService.getNextBooking(item, item.getOwner());
+
+        ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, lastBooking, nextBooking, Collections.emptyList());
 
         Collection<ItemDtoFull> actualItemDtos = itemService.getItemsOfUser(anyInt());
 

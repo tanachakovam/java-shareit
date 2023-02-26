@@ -303,6 +303,16 @@ class BookingServiceTest {
     }
 
     @Test
+    void getBookingsOfUser_whenStatusNotValid_thenWrongBookingRequestExceptionThrown() {
+        when(userService.findUserById(anyInt()))
+                .thenReturn(user);
+        assertThatThrownBy(
+                () -> bookingService.getBookingsOfUser("ddd", user.getId(), PageRequest.of(0, 10))
+        ).isInstanceOf(WrongBookingRequestException.class)
+                .message().isEqualTo("Unknown state: UNSUPPORTED_STATUS");
+    }
+
+    @Test
     void getBookingsOfUser_whenStatusPast_thenResponseStatusOkWithBookingCollection() {
         final List<Booking> bookings = List.of(booking);
 
@@ -354,6 +364,14 @@ class BookingServiceTest {
     }
 
     @Test
+    void getBookingsOfUser_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+        assertThatThrownBy(
+                () -> bookingService.getBookingsOfUser("WAITING", anyInt(), PageRequest.of(0, 10))
+        ).isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User with this ID doesn't exist.");
+    }
+
+    @Test
     void getBookingsOfUser_whenInvoked_thenResponseStatusOkWithBookingCollection() {
         final List<Booking> bookings = List.of(booking);
 
@@ -402,6 +420,24 @@ class BookingServiceTest {
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
+    }
+
+    @Test
+    void getBookingsOfOwner_whenStatusNotValid_thenWrongBookingRequestExceptionThrown() {
+        when(userService.findUserById(anyInt()))
+                .thenReturn(user);
+        assertThatThrownBy(
+                () -> bookingService.getBookingsOfOwner("ddd", user.getId(), PageRequest.of(0, 10))
+        ).isInstanceOf(WrongBookingRequestException.class)
+                .message().isEqualTo("Unknown state: UNSUPPORTED_STATUS");
+    }
+
+    @Test
+    void getBookingsOfOwner_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+        assertThatThrownBy(
+                () -> bookingService.getBookingsOfOwner("WAITING", anyInt(), PageRequest.of(0, 10))
+        ).isInstanceOf(UserNotFoundException.class)
+                .message().isEqualTo("User with this ID doesn't exist.");
     }
 
     @Test

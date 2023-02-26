@@ -128,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
         return foundItems;
     }
 
-    private BookingDto.BookingDtoForOwner getLastBooking(Item item, int userId) {
+    public BookingDto.BookingDtoForOwner getLastBooking(Item item, int userId) {
         Booking lastBooking = null;
         if (item.getOwner() == userId && !bookingRepository.findAllByOwner(userId).isEmpty()) {
             lastBooking = bookingRepository.findLastBooking(item.getId(), LocalDateTime.now(), userId).stream().findFirst().orElse(null);
@@ -136,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
         return bookingMapper.toBookingDtoForOwner(lastBooking);
     }
 
-    private BookingDto.BookingDtoForOwner getNextBooking(Item item, int userId) {
+    public BookingDto.BookingDtoForOwner getNextBooking(Item item, int userId) {
         Booking nextBooking = null;
         if (item.getOwner() == userId && !bookingRepository.findAllByOwner(userId).isEmpty()) {
             nextBooking = bookingRepository.findNextBooking(item.getId(), LocalDateTime.now(), userId).stream().findFirst().orElse(null);
