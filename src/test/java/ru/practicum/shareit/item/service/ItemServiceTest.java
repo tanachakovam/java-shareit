@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.WrongBookingRequestException;
 import ru.practicum.shareit.booking.mapper.BookingMapperImpl;
@@ -236,14 +237,14 @@ class ItemServiceTest {
         final List<Item> items = List.of(item);
 
 
-        when(itemRepository.findAllByOwner(anyInt()))
+        when(itemRepository.findAllByOwner(anyInt(), any()))
                 .thenReturn(items);
         when(bookingRepository.findAllByItemId(item.getId()))
                 .thenReturn(List.of(booking));
 
         ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, null, null, Collections.emptyList());
 
-        Collection<ItemDtoFull> actualItemDtos = itemService.getItemsOfUser(itemDtos.getId());
+        Collection<ItemDtoFull> actualItemDtos = itemService.getItemsOfUser(anyInt(), any());
 
         assertNotNull(actualItemDtos);
         assertEquals(List.of(itemDtos), actualItemDtos);
@@ -261,10 +262,10 @@ class ItemServiceTest {
     void findItemsByUser_whenInvoked_thenResponseStatusOkWithItemCollection() {
         final List<Item> items = List.of(item);
 
-        when(itemRepository.findAllByOwner(anyInt()))
+        when(itemRepository.findAllByOwner(anyInt(), any()))
                 .thenReturn(items);
 
-        Collection<Item> actualItems = itemService.findItemsByUser(anyInt());
+        Collection<Item> actualItems = itemService.findItemsByUser(1);
 
         assertNotNull(actualItems);
         assertEquals(items, actualItems);
@@ -289,12 +290,12 @@ class ItemServiceTest {
     void search_whenInvoked_thenResponseStatusOkWithItemCollection() {
         final List<Item> items = List.of(item);
 
-        when(itemRepository.search(anyString()))
+        when(itemRepository.search(anyString(), any()))
                 .thenReturn(items);
         List<ItemDto> itemDtos = itemMapper.toItemDtoCollection(items);
 
 
-        Collection<ItemDto> actualItems = itemService.search("item");
+        Collection<ItemDto> actualItems = itemService.search("item", PageRequest.of(0, 10));
 
         assertNotNull(actualItems);
         assertEquals(itemDtos, actualItems);
@@ -305,7 +306,7 @@ class ItemServiceTest {
         final List<Item> items = Collections.emptyList();
         List<ItemDto> itemDtos = itemMapper.toItemDtoCollection(items);
 
-        Collection<ItemDto> actualItems = itemService.search("");
+        Collection<ItemDto> actualItems = itemService.search("", PageRequest.of(0, 10));
 
         assertEquals(itemDtos.isEmpty(), actualItems.isEmpty());
     }

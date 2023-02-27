@@ -55,6 +55,7 @@ class BookingControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(bookingDto), result);
+        verify(bookingService, times(1)).addNewBooking(bookingDto, 1);
     }
 
     @SneakyThrows
@@ -72,6 +73,7 @@ class BookingControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(bookingDto), result);
+        verify(bookingService, times(1)).approveBooking(1, true, 1);
     }
 
     @SneakyThrows
@@ -88,7 +90,7 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService).getBooking(1, 1);
+        verify(bookingService,times(1)).getBooking(1, 1);
         assertEquals(objectMapper.writeValueAsString(bookingDto), result);
     }
 

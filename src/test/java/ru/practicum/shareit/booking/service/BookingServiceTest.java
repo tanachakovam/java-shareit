@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.WrongBookingRequestException;
@@ -313,7 +312,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("WAITING", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("WAITING", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -330,7 +329,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("CURRENT", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("CURRENT", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -341,7 +340,7 @@ class BookingServiceTest {
         when(userService.findUserById(anyInt()))
                 .thenReturn(user);
         assertThatThrownBy(
-                () -> bookingService.getBookingsOfUser("ddd", user.getId(), PageRequest.of(0, 10))
+                () -> bookingService.getBookingsOfUser("ddd", user.getId(), any())
         ).isInstanceOf(WrongBookingRequestException.class)
                 .message().isEqualTo("Unknown state: UNSUPPORTED_STATUS");
     }
@@ -357,7 +356,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("PAST", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("PAST", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -374,7 +373,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("FUTURE", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("FUTURE", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -391,7 +390,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("REJECTED", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("REJECTED", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -400,7 +399,7 @@ class BookingServiceTest {
     @Test
     void getBookingsOfUser_whenUserNotFound_thenUserNotFoundExceptionThrown() {
         assertThatThrownBy(
-                () -> bookingService.getBookingsOfUser("WAITING", anyInt(), PageRequest.of(0, 10))
+                () -> bookingService.getBookingsOfUser("WAITING", -5, any())
         ).isInstanceOf(UserNotFoundException.class)
                 .hasMessage("User with this ID doesn't exist.");
     }
@@ -416,7 +415,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("ALL", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfUser("ALL", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -433,7 +432,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("ALL", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("ALL", user.getId(),any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -450,7 +449,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("REJECTED", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("REJECTED", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -461,7 +460,7 @@ class BookingServiceTest {
         when(userService.findUserById(anyInt()))
                 .thenReturn(user);
         assertThatThrownBy(
-                () -> bookingService.getBookingsOfOwner("ddd", user.getId(), PageRequest.of(0, 10))
+                () -> bookingService.getBookingsOfOwner("ddd", user.getId(), any())
         ).isInstanceOf(WrongBookingRequestException.class)
                 .message().isEqualTo("Unknown state: UNSUPPORTED_STATUS");
     }
@@ -469,7 +468,7 @@ class BookingServiceTest {
     @Test
     void getBookingsOfOwner_whenUserNotFound_thenUserNotFoundExceptionThrown() {
         assertThatThrownBy(
-                () -> bookingService.getBookingsOfOwner("WAITING", anyInt(), PageRequest.of(0, 10))
+                () -> bookingService.getBookingsOfOwner("WAITING", -5, any())
         ).isInstanceOf(UserNotFoundException.class)
                 .message().isEqualTo("User with this ID doesn't exist.");
     }
@@ -485,7 +484,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("WAITING", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("WAITING", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -502,7 +501,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("FUTURE", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("FUTURE", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -519,7 +518,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("PAST", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("PAST", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);
@@ -536,7 +535,7 @@ class BookingServiceTest {
 
         List<BookingDto> bookingDtos = bookingMapper.toBookingDtoCollection(bookings);
 
-        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("CURRENT", user.getId(), PageRequest.of(0, 10));
+        List<BookingDto> actualBookingDtos = bookingService.getBookingsOfOwner("CURRENT", user.getId(), any());
 
         assertNotNull(actualBookingDtos);
         assertEquals(bookingDtos, actualBookingDtos);

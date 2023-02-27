@@ -53,7 +53,7 @@ class UserControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(userService).getUserById(anyInt());
+        verify(userService, times(1)).getUserById(anyInt());
         assertEquals(objectMapper.writeValueAsString(user), result);
     }
 
@@ -73,6 +73,8 @@ class UserControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(user), result);
+        verify(userService, times(1)).addNewUser(user);
+
     }
 
     @SneakyThrows
@@ -121,6 +123,8 @@ class UserControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(userToUpdate), result);
+        verify(userService, times(1)).updateUser(userToUpdate, userId);
+
     }
 
     @SneakyThrows

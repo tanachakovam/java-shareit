@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -105,14 +107,14 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Collection<Item> findItemsByUser(int id) {
-        return itemRepository.findAllByOwner(id);
+        return itemRepository.findAllByOwner(id, PageRequest.of(0, 10));
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ItemDtoFull> getItemsOfUser(int id) {
-        Collection<Item> items = itemRepository.findAllByOwner(id);
+    public Collection<ItemDtoFull> getItemsOfUser(int id, Pageable pageable) {
+        Collection<Item> items = itemRepository.findAllByOwner(id, pageable);
         List<ItemDtoFull> foundItems = new ArrayList<>();
         BookingDto.BookingDtoForOwner nextBooking = null;
         BookingDto.BookingDtoForOwner lastBooking = null;
@@ -159,11 +161,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ItemDto> search(String text) {
+    public Collection<ItemDto> search(String text, Pageable pageable) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        Collection<Item> items = itemRepository.search(text);
+        Collection<Item> items = itemRepository.search(text, pageable);
         return itemMapper.toItemDtoCollection(items);
     }
 

@@ -57,6 +57,8 @@ class ItemRequestControllerTest {
                 .getResponse()
                 .getContentAsString();
         assertEquals(objectMapper.writeValueAsString(itemRequestDto), result);
+        verify(requestService, times(1)).addNewItemRequest(itemRequestDto, 1);
+
     }
 
 

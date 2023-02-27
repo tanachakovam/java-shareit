@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -42,14 +43,14 @@ class ItemRepositoryIT {
 
     @Test
     void search_whenNotFoundByText_thenEmptyList() {
-        List<Item> actualItems = itemRepository.search("name");
+        List<Item> actualItems = itemRepository.search("name", PageRequest.of(0, 10));
 
         assertTrue(actualItems.isEmpty());
     }
 
     @Test
     void search_whenFoundByText_thenNotEmptyList() {
-        List<Item> actualItems = itemRepository.search("item2");
+        List<Item> actualItems = itemRepository.search("item2", PageRequest.of(0, 10));
 
         assertFalse(actualItems.isEmpty());
         assertEquals(1, actualItems.size());
@@ -58,7 +59,7 @@ class ItemRepositoryIT {
 
     @Test
     void findAllByOwner_whenNotFound_thenEmptyList() {
-        List<Item> actualItems = itemRepository.findAllByOwner(999);
+        List<Item> actualItems = itemRepository.findAllByOwner(999, PageRequest.of(0, 10));
 
         assertTrue(actualItems.isEmpty());
     }

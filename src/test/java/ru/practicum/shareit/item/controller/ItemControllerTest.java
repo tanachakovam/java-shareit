@@ -65,7 +65,7 @@ class ItemControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(itemService).getItemById(itemId, userId);
+        verify(itemService, times(1)).getItemById(itemId, userId);
         assertEquals(objectMapper.writeValueAsString(itemDtoFull), result);
     }
 
@@ -86,6 +86,7 @@ class ItemControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(itemDto), result);
+        verify(itemService, times(1)).addNewItem(itemDto, 1);
     }
 
     @SneakyThrows
@@ -147,12 +148,13 @@ class ItemControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(itemDto), result);
+        verify(itemService, times(1)).updateItem(itemDto, 1, 1);
     }
 
     @SneakyThrows
     @Test
     void getItemsOfUser_whenInvoked_thenResponseStatusOkWithUserEmptyCollectionInBody() {
-        when(itemService.getItemsOfUser(1))
+        when(itemService.getItemsOfUser(anyInt(), any()))
                 .thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/items")
@@ -160,13 +162,13 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
 
-        verify(itemService, times(1)).getItemsOfUser(1);
+        verify(itemService, times(1)).getItemsOfUser(anyInt(), any());
     }
 
     @SneakyThrows
     @Test
     void getItemsOfUser_whenInvoked_thenResponseStatusOkWithItemCollectionInBody() {
-        when(itemService.getItemsOfUser(1))
+        when(itemService.getItemsOfUser(anyInt(), any()))
                 .thenReturn(List.of(itemDtoFull));
 
         String result = mockMvc.perform(get("/items")
@@ -179,7 +181,7 @@ class ItemControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(List.of(itemDtoFull)), result);
-        verify(itemService, times(1)).getItemsOfUser(1);
+        verify(itemService, times(1)).getItemsOfUser(anyInt(), any());
     }
 
     @SneakyThrows
@@ -197,6 +199,7 @@ class ItemControllerTest {
                 .getResponse()
                 .getContentAsString();
 
+        verify(itemService, times(1)).addNewComment(commentDto, 1, 1);
         assertEquals(objectMapper.writeValueAsString(commentDto), result);
     }
 
@@ -220,7 +223,7 @@ class ItemControllerTest {
     @Test
     void search_whenInvoked_thenSearch() {
 
-        when(itemService.search(anyString())).thenReturn(List.of(itemDto));
+        when(itemService.search(anyString(), any())).thenReturn(List.of(itemDto));
 
         String result = mockMvc.perform(get("/items/search?text=item", "item")
                         .header(SHARER_USER_ID, 1)
@@ -232,5 +235,6 @@ class ItemControllerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(List.of(itemDto)), result);
+        verify(itemService, times(1)).search(anyString(), any());
     }
 }
