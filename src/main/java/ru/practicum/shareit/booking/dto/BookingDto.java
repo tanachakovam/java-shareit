@@ -35,6 +35,7 @@ public class BookingDto {
         private final String name;
     }
 
+    @Builder
     @Data
     public static class BookingDtoForOwner {
         private Integer id;

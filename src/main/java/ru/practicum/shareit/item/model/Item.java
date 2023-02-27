@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Table(name = "items")
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Item {

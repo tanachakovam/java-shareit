@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.WrongBookingRequestException;
 import ru.practicum.shareit.booking.mapper.BookingMapperImpl;
 import ru.practicum.shareit.booking.model.Booking;
@@ -32,8 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -186,7 +186,50 @@ class ItemServiceTest {
 
         assertNotNull(actualItemDtos);
         assertEquals(itemDtos, actualItemDtos);
+        assertNull(actualItemDtos.getNextBooking());
+        assertNull(actualItemDtos.getNextBooking());
     }
+
+    @Test
+    void getItemById_whenInvokedWithNextBooking_thenResponseStatusOkWithItem() {
+        final List<Booking> bookings = List.of(booking);
+
+        when(itemRepository.findById(anyInt()))
+                .thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByOwner(user.getId()))
+                .thenReturn(bookings);
+        when(bookingRepository.findNextBooking(anyInt(), any(LocalDateTime.class), anyInt()))
+                .thenReturn(bookings);
+        BookingDto.BookingDtoForOwner nextBooking = bookingMapper.toBookingDtoForOwner(bookings.stream().findFirst().orElse(null));
+
+        ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, null, nextBooking, Collections.emptyList());
+
+        ItemDtoFull actualItemDtos = itemService.getItemById(item.getId(), user.getId());
+
+        assertNotNull(actualItemDtos);
+        assertEquals(itemDtos, actualItemDtos);
+    }
+
+    @Test
+    void getItemById_whenInvokedWithLastBooking_thenResponseStatusOkWithItem() {
+        final List<Booking> bookings = List.of(booking);
+
+        when(itemRepository.findById(anyInt()))
+                .thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByOwner(user.getId()))
+                .thenReturn(bookings);
+        when(bookingRepository.findLastBooking(anyInt(), any(LocalDateTime.class), anyInt()))
+                .thenReturn(bookings);
+        BookingDto.BookingDtoForOwner lastBooking = bookingMapper.toBookingDtoForOwner(bookings.stream().findFirst().orElse(null));
+
+        ItemDtoFull itemDtos = itemMapper.toItemDtoFull(item, lastBooking, null, Collections.emptyList());
+
+        ItemDtoFull actualItemDtos = itemService.getItemById(item.getId(), user.getId());
+
+        assertNotNull(actualItemDtos);
+        assertEquals(itemDtos, actualItemDtos);
+    }
+
 
     @Test
     void getItemsOfUser_whenInvoked_thenResponseStatusOkWithItemCollection() {

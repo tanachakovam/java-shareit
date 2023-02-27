@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoFull;
@@ -40,7 +41,10 @@ class ItemControllerTest {
     @BeforeEach
     void setUp() {
         itemDto = ItemDto.builder().name("item").description("item description").available(Boolean.TRUE).build();
-        itemDtoFull = ItemDtoFull.builder().name("item2").description("item2 description").available(Boolean.FALSE).build();
+        BookingDto.BookingDtoForOwner lastBooking = BookingDto.BookingDtoForOwner.builder().id(1).bookerId(1).build();
+        BookingDto.BookingDtoForOwner nextBooking = BookingDto.BookingDtoForOwner.builder().id(1).bookerId(1).build();
+        itemDtoFull = ItemDtoFull.builder().name("item2").description("item2 description").available(Boolean.FALSE).nextBooking(nextBooking).lastBooking(lastBooking).build();
+
         commentDto = CommentDto.builder().text("comment").authorName("Name").created(LocalDateTime.now()).build();
     }
 

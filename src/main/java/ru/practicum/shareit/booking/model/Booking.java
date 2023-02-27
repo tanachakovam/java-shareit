@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "bookings")
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Booking {

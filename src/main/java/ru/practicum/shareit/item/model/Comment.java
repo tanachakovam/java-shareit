@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Table(name = "comments")
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Comment {
