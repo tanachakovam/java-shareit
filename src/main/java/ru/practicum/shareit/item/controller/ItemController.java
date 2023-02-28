@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -8,6 +9,8 @@ import ru.practicum.shareit.item.dto.ItemDtoFull;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 /**
@@ -37,13 +40,18 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDtoFull> getItemsOfUser(@RequestHeader(SHARER_USER_ID) int userId) {
-        return itemService.getItemsOfUser(userId);
+    public Collection<ItemDtoFull> getItemsOfUser(@PositiveOrZero @RequestParam(value = "from", defaultValue = "0", required = false) Integer from,
+                                                  @Positive @RequestParam(value = "size", defaultValue = "20", required = false) Integer size,
+                                                  @RequestHeader(SHARER_USER_ID) int userId) {
+        return itemService.getItemsOfUser(userId, PageRequest.of(from / size, size));
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> search(@RequestParam(value = "text") String text, @RequestHeader(SHARER_USER_ID) int userId) {
-        return itemService.search(text);
+    public Collection<ItemDto> search(@RequestParam(value = "text") String text,
+                                      @PositiveOrZero @RequestParam(value = "from", defaultValue = "0", required = false) Integer from,
+                                      @Positive @RequestParam(value = "size", defaultValue = "20", required = false) Integer size,
+                                      @RequestHeader(SHARER_USER_ID) int userId) {
+        return itemService.search(text, PageRequest.of(from / size, size));
     }
 
     // POST /items/{itemId}/comment
