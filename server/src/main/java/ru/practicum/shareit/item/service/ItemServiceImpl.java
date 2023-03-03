@@ -114,7 +114,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public Collection<ItemDtoFull> getItemsOfUser(int id, Pageable pageable) {
-        Collection<Item> items = itemRepository.findAllByOwner(id, pageable);
+        Collection<Item> items = itemRepository.findAllByOwnerOrderById(id, pageable);
         List<ItemDtoFull> foundItems = new ArrayList<>();
         BookingDto.BookingDtoForOwner nextBooking = null;
         BookingDto.BookingDtoForOwner lastBooking = null;
