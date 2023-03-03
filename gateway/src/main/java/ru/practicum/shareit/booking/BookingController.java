@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.IllegalParameterException;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
@@ -27,7 +28,7 @@ public class BookingController {
                                                     @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                     @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new IllegalParameterException("Unknown state: " + stateParam));
         log.info("Get booking of user with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getBookingsOfUser(userId, state, from, size);
     }
@@ -38,7 +39,7 @@ public class BookingController {
                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new IllegalParameterException("Unknown state: " + stateParam));
         log.info("Get booking of owner with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getBookingsOfOwner(userId, state, from, size);
     }
@@ -55,7 +56,7 @@ public class BookingController {
                                                  @PathVariable Long bookingId,
                                                  @RequestParam(value = "approved") Boolean approved) {
         log.info("Patch booking {}, userId={}, approved={}", bookingId, userId, approved);
-        return bookingClient.approveBooking(bookingId, approved, userId);
+        return bookingClient.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")

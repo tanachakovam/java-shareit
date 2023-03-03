@@ -17,6 +17,7 @@ import java.util.Map;
 public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
 
+
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
@@ -49,8 +50,11 @@ public class BookingClient extends BaseClient {
         return post("", userId, bookingDto);
     }
 
-    public ResponseEntity<Object> approveBooking(Long bookingId, Boolean approved, long userId) {
-        return patch("/" + bookingId + "?approved={approved}", userId, approved);
+    public ResponseEntity<Object> approveBooking(long userId, Long bookingId, Boolean approved) {
+        Map<String, Object> parameter = Map.of(
+                "approved", approved
+        );
+        return patch("/" + bookingId + "?approved={approved}", userId, parameter, null);
     }
 
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
