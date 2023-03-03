@@ -237,7 +237,7 @@ class ItemServiceTest {
         final List<Item> items = List.of(item);
 
 
-        when(itemRepository.findAllByOwner(anyInt(), any()))
+        when(itemRepository.findAllByOwnerOrderByIdAsc(anyInt(), any()))
                 .thenReturn(items);
         when(bookingRepository.findAllByItemId(item.getId()))
                 .thenReturn(List.of(booking));
