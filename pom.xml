@@ -11,13 +11,21 @@
 
     <groupId>ru.practicum</groupId>
     <artifactId>shareit</artifactId>
+    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
     <name>ShareIt</name>
 
     <properties>
-        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <modules>
+        <module>gateway</module>
+        <module>server</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -37,10 +45,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,12 +88,6 @@
     </dependencyManagement>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
