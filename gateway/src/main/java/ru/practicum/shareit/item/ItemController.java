@@ -38,7 +38,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                                             @RequestBody ItemDto itemDto,
+                                             @Valid @RequestBody ItemDto itemDto,
                                              @PathVariable Long itemId) {
         log.info("Patch item {}, itemId={}, userId={}", itemDto, itemId, userId);
         return itemClient.updateItem(userId, itemId, itemDto);
