@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -38,10 +39,10 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                                             @Valid @RequestBody ItemDto itemDto,
+                                             @Valid @RequestBody ItemDtoUpdate itemDtoUpdate,
                                              @PathVariable Long itemId) {
-        log.info("Patch item {}, itemId={}, userId={}", itemDto, itemId, userId);
-        return itemClient.updateItem(userId, itemId, itemDto);
+        log.info("Patch item {}, itemId={}, userId={}", itemDtoUpdate, itemId, userId);
+        return itemClient.updateItem(userId, itemId, itemDtoUpdate);
     }
 
     @GetMapping("/{itemId}")
